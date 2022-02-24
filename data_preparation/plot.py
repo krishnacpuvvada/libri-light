@@ -5,7 +5,8 @@ plt.switch_backend('agg')
 
 
 def plot_hist(seq, nBins, pathOut, y_label="", title="",
-              x_label="", normalized=True, y_scale=None, x_scale=None):
+              x_label="", normalized=True, y_scale=None, x_scale=None,
+              x_ticks=None, x_labels=None):
 
     if isinstance(seq, list):
         seq = np.array(seq)
@@ -22,7 +23,10 @@ def plot_hist(seq, nBins, pathOut, y_label="", title="",
     if y_scale is not None:
         plt.yscale(y_scale)
     if x_scale is not None:
-        plt.yscale(x_scale)
+        plt.xscale(x_scale)
+    if x_ticks is not None:
+        plt.xticks(ticks=x_ticks, labels=x_labels)
+
     plt.tight_layout()
     plt.savefig(pathOut)
 
