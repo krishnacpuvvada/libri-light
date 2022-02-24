@@ -242,6 +242,29 @@ def get_speaker_hours_data(list_metadata, audio_extension):
     return speakerTalk
 
 
+def get_duration_sec_data(list_metadata, audio_extension):
+
+    duration_data = {}
+    nData = len(list_metadata)
+
+    bar = progressbar.ProgressBar(maxval=nData)
+    bar.start()
+
+    for index, pathMetadata in enumerate(list_metadata):
+        bar.update(index)
+
+        path_audio_data = os.path.splitext(pathMetadata)[0] + audio_extension
+
+        info = torchaudio.info(path_audio_data)
+        duration = info.num_frames / (info.sample_rate * 1.)
+
+        duration_data[path_audio_data] = duration
+
+    bar.finish()
+
+    return duration_data
+
+
 def get_hour_tag_repartition(list_metadata, tagName,
                              audio_extension):
 

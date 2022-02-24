@@ -62,3 +62,20 @@ if __name__ == "__main__":
                    y_label="Number of speakers", normalized=False,
                    y_scale='log', x_label="Time spoken in hours")
     print("done.")
+
+    # Get the duration statistics
+    print("Building the duration statistics")
+    path_duration_cache = path_cache / "duration_data.json"
+    duration_data = ut.load_cache(path_duration_cache,
+                                 ut.get_duration_sec_data,
+                                 args=(list_metadata,
+                                       ".flac"))
+
+    duration_sec = [x for _, x in duration_data.items()]
+    path_duration_hist = args.out_dir / "duration_data.png"
+    n_bins = [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, max(duration_sec)+1]
+    plot.plot_hist(duration_sec, n_bins, str(path_duration_hist),
+                   title="Duration per audio file",
+                   y_label="Number of audio files", normalized=False,
+                   y_scale='log', x_label="Duration in sec")
+    print("done.")
