@@ -23,7 +23,7 @@ def plot_hist(seq, nBins, pathOut, y_label="", title="",
     if y_scale is not None:
         plt.yscale(y_scale)
     if x_scale is not None:
-        plt.xscale(x_scale)
+        plt.xscale(x_scale, basex=2)
     if x_ticks is not None:
         plt.xticks(ticks=x_ticks, labels=x_labels)
 
