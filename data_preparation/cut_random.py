@@ -70,6 +70,11 @@ def cut_book(task):
     speaker = pathlib.Path(path_book.parent.name)
     manifest_book = []
 
+    # exclude reader 1259
+    exclude_readers=set(["1259"])
+    if speaker in exclude_readers:
+        return []
+
     for i, meta_file_path in enumerate(path_book.glob('*.json')):
         with open(meta_file_path, 'r') as f:
             meta = json.loads(f.read())
