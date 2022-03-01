@@ -67,12 +67,13 @@ def cut_sequence(path, vad, path_out, target_len_min_sec, target_len_max_sec, ou
 def cut_book(task):
     path_book, root_out, target_len_min_sec, target_len_max_sec, extension = task
 
+    subset = pathlib.Path(path_book.parent.parent.name)
     speaker = pathlib.Path(path_book.parent.name)
     manifest_book = []
 
     # exclude reader 1259
     exclude_readers=set(["1259"])
-    if speaker in exclude_readers:
+    if speaker.as_posix() in exclude_readers:
         return []
 
     for i, meta_file_path in enumerate(path_book.glob('*.json')):
@@ -83,7 +84,7 @@ def cut_book(task):
 
         sound_file = meta_file_path.parent / (meta_file_path.stem + '.flac')
 
-        path_out = root_out / speaker / book_id / (meta_file_path.stem)
+        path_out = root_out / subset / speaker / book_id / (meta_file_path.stem)
         manifest_sequence = cut_sequence(sound_file, vad, path_out, target_len_min_sec, target_len_max_sec, extension)
         manifest_book.append(manifest_sequence)
 
@@ -98,7 +99,7 @@ def cut(input_dir,
         n_process=32,
         out_extension='.flac'):
 
-    list_dir = pathlib.Path(input_dir).glob('*/*')
+    list_dir = pathlib.Path(input_dir).glob('*/*/*')
     list_dir = [x for x in list_dir if x.is_dir()]
 
     print(f"{len(list_dir)} directories detected")
