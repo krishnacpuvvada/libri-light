@@ -14,9 +14,14 @@ import random
 import itertools
 import math
 
+def round_down(x, n=3):
+    factor = 10.**n
+    x = math.floor(x*factor)/factor
+    return x
+
 def save(seq, fname, index, extension):
     output = np.hstack(seq)
-    file_name = fname.parent / (fname.stem + f"_{index:04}{extension}")
+    file_name = fname.parent / (fname.name + f"_{index:04}{extension}")     #fname already comes from stem, so .name should be fine
     fname.parent.mkdir(exist_ok=True, parents=True)
     sf.write(file_name, output, samplerate=16000)
     return str(file_name)
@@ -34,9 +39,8 @@ def cut_sequence(path, vad, path_out, target_len_min_sec, target_len_max_sec, ou
 
     total_length=len(data)/samplerate
     
-    # round down to 2 decimal places
-    factor=100.
-    total_length = math.floor(total_length*factor)/factor
+    # round down to 3 decimal places
+    total_length = round_down(total_length, n=3)
 
     i = 0
     start = 0
@@ -48,7 +52,7 @@ def cut_sequence(path, vad, path_out, target_len_min_sec, target_len_max_sec, ou
         slice = data[start_index:end_index]
 
         audio_filepath = save([slice], path_out, i, out_extension)
-        manifest_sequence.append({"audio_filepath":audio_filepath, "duration":round((end-start) ,2)})
+        manifest_sequence.append({"audio_filepath":audio_filepath, "duration":round_down((end-start) ,3)})
         
         i+=1
         start = end
@@ -59,7 +63,7 @@ def cut_sequence(path, vad, path_out, target_len_min_sec, target_len_max_sec, ou
         start_index = int(start*samplerate)
         end_index = int(total_length*samplerate)
         audio_filepath = save([data[start_index:end_index]], path_out, i, out_extension)
-        manifest_sequence.append({"audio_filepath":audio_filepath, "duration":round((total_length-start), 2)})
+        manifest_sequence.append({"audio_filepath":audio_filepath, "duration":round_down((total_length-start), 3)})
 
     return manifest_sequence
 
